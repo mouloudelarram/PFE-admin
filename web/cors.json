@@ -1,0 +1,11 @@
+[
+    {
+        "origin": [
+            "https://firebasestorage.googleapis.com/v0/b/essaouira-380b0.appspot.com/o/img"
+        ],
+        "method": [
+            "GET"
+        ],
+        "maxAgeSeconds": 3600
+    }
+]

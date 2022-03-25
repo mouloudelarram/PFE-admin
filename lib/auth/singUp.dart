@@ -1,21 +1,31 @@
 import 'package:flutter/gestures.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'package:flutter/material.dart';
+import '../Services/authController.dart';
 
-import 'authController.dart';
-
-class SignUp extends StatelessWidget {
+class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);
+
+  @override
+  _SignUpState createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
-    var emailController = TextEditingController();
-    var passwordController = TextEditingController();
 
     List<String> images = [
       "g.png",
@@ -31,30 +41,16 @@ class SignUp extends StatelessWidget {
               color: Colors.white,
               width: w,
               height: h * 0.3,
-              /* decoration: const BoxDecoration(
-                /* image: DecorationImage(
-                  image: AssetImage(
-                    "img/test1.png",
-                  ),
-                  fit: BoxFit.cover,
-                ),
-               */), */
               child: Column(
                 children: [
                   Expanded(
                     child: Container(),
                   ),
-                  //SizedBox(height: h*0.18,),
                   Container(
-                    /* decoration: BoxDecoration(
-                    border: Border.all(color: Colors.cyan, width: 5),
-                    borderRadius: BorderRadius.circular(50),
-                  ), */
                     child: const CircleAvatar(
                       radius: 50,
                       backgroundImage: AssetImage("img/logo3.png"),
                       backgroundColor: Colors.cyan,
-                      
                     ),
                   ),
                 ],
@@ -172,7 +168,7 @@ class SignUp extends StatelessWidget {
                 height: h * 0.1,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  image: const DecorationImage(
+                  image: DecorationImage(
                     image: AssetImage(
                       "img/loginbtn.png",
                     ),
@@ -237,24 +233,6 @@ class SignUp extends StatelessWidget {
                 );
               }),
             ),
-            /* ElevatedButton(
-              child: const Text('Open route'),
-              // ignore: prefer_const_constructors
-              style: ElevatedButton.styleFrom(
-                textStyle: const TextStyle(
-                  fontSize: 20,
-                  backgroundColor: Colors.transparent,
-                ),
-                primary: Colors.white, // background
-                onPrimary: Colors.blue, // foreground
-              ),
-
-              onPressed: () {
-                Navigator.pop(
-                  context,
-                );
-              },
-            ), */
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'authController.dart';
+import '../../Services/authController.dart';
+
 
 class Home extends StatelessWidget {
   String? email = "email@email.com";

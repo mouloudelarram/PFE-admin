@@ -1,18 +1,28 @@
+import 'package:flutter/foundation.dart';
+import 'dart:typed_data';
 import 'package:admin/Services/StorageService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import '../Services/authController.dart';
 
-class PushData extends StatefulWidget {
-  const PushData({Key? key}) : super(key: key);
+class ModifyDestination extends StatefulWidget {
+  //String emailAdmin;
+  QueryDocumentSnapshot<Object?> element;
+  ModifyDestination({Key? key, required this.element}) : super(key: key);
 
   @override
-  _PushDataState createState() => _PushDataState();
+  _ModifyDestinationState createState() =>
+      _ModifyDestinationState(element: this.element);
 }
 
-class _PushDataState extends State<PushData> {
+class _ModifyDestinationState extends State<ModifyDestination> {
+  //String emailAdmin;
+  QueryDocumentSnapshot<Object?> element;
+  _ModifyDestinationState({required this.element});
   var idController = TextEditingController();
-  var imageUrlController = TextEditingController().text = 'nofile.png';
+  var imageUrlController =
+      TextEditingController().text = ''; //.text = 'nofile.png';
   var cityController = TextEditingController();
   var countryController = TextEditingController();
   var descriptionController = TextEditingController();
@@ -53,33 +63,70 @@ class _PushDataState extends State<PushData> {
     super.dispose();
   }
 
+  void initialize() {
+    idController.text = element['id'].toString();
+    //imageUrlController = element['imageUrl'].toString();
+    cityController.text = element['city'];
+    countryController.text = element['country'];
+    descriptionController.text = element['description'];
+    labelController.text = element['label'];
+    ratingController.text = element['rating'].toString();
+    nameController.text = element['name'];
+    addressController.text = element['address'];
+    typeController.text = element['type'];
+    markerIdController.text = element['markerId'];
+    latitudeController.text = element['latitude'].toString();
+    longitudeController.text = element['longitude'].toString();
+    iconController.text = element['icon'];
+    titleController.text = element['title'];
+    snippetController.text = element['snippet'];
+    categoryController.text = element['category'];
+  }
+
   List<bool> _selections = List.generate(2, (_) => false);
 
   void change() {
     setState(() {
       imageUrlController = imageUrlController;
+      typeController.text = element['type'];
+      categoryController.text = element['category'];
     });
   }
 
   StorageM storage = StorageM();
 
-  Future addDestination() async {
+  Future modifyDestination() async {
+    await FirebaseFirestore.instance
+        .collection('destination')
+        .orderBy('id')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        if (doc.get('id') == element['id'] &&
+            doc.get('name') == element['name']) {
+          doc.reference.delete();
+        }
+      });
+    });
+
     final docDestination =
-        FirebaseFirestore.instance.collection('destination').doc();
+        await FirebaseFirestore.instance.collection('destination').doc();
     final json = {
-      'id': idController.text,
-      'imageUrl': await storage.downloadURL(imageUrlController),
-      'city': cityController.text,
-      'country': countryController.text,
+      'id': int.parse(idController.text),
+      'imageUrl': (imageUrlController != '')
+          ? await storage.downloadURL(imageUrlController)
+          : element['imageUrl'].toString(),
+      'city': 'Essaouira', //cityController.text,
+      'country': 'Maroc', //countryController.text,
       'description': descriptionController.text,
       'label': labelController.text,
       'type': typeController.text,
       'name': nameController.text,
       'address': addressController.text,
-      'rating': ratingController.text,
-      'markerId': 'id-${idController.text}',
-      'latitude': latitudeController.text,
-      'longitude': longitudeController.text,
+      'rating': int.parse(ratingController.text),
+      'markerId': 'id-${nameController.text}', //'id-${idController.text}',
+      'latitude': double.parse(latitudeController.text),
+      'longitude': double.parse(longitudeController.text),
       'icon': '',
       'title': titleController.text,
       'snippet': snippetController.text,
@@ -93,12 +140,23 @@ class _PushDataState extends State<PushData> {
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
-
+    initialize();
     return Scaffold(
       appBar: AppBar(
-          title: const Center(
-        child: Text('Ajoute une autre destination.'),
-      )),
+        backgroundColor: const Color(0xFF3EBACE),
+        title: Text(element['name']),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              AuthController.instance.logOut();
+            },
+          ),
+        ],
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Column(
@@ -117,22 +175,23 @@ class _PushDataState extends State<PushData> {
                     child: const Text(
                       'Destination Information.',
                       style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.cyan),
+                        fontSize: 30,
+                        fontWeight: FontWeight.w300,
+                        color: const Color(0xFF3EBACE),
+                      ),
                     ),
                   ),
                   //id field
                   Container(
                     child: TextField(
                       controller: idController,
-                      onChanged: (n) {
+                      /* onChanged: (n) {
                         print(n.toString());
-                      },
+                      }, */
                       keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'destination id',
+                        labelText: 'destination number',
                       ),
                     ),
                   ),
@@ -160,7 +219,7 @@ class _PushDataState extends State<PushData> {
                   ),
 
                   //city field
-                  Container(
+                  /* Container(
                     child: TextField(
                       controller: cityController,
                       keyboardType: TextInputType.multiline,
@@ -174,9 +233,10 @@ class _PushDataState extends State<PushData> {
                   const SizedBox(
                     height: 20,
                   ),
+ */
 
                   //country flied
-                  Container(
+                  /* Container(
                     child: TextField(
                       controller: countryController,
                       keyboardType: TextInputType.multiline,
@@ -186,10 +246,10 @@ class _PushDataState extends State<PushData> {
                         labelText: 'country',
                       ),
                     ),
-                  ),
-                  const SizedBox(
+                  ), */
+                  /* const SizedBox(
                     height: 20,
-                  ),
+                  ), */
 
                   //label field
                   Container(
@@ -211,14 +271,6 @@ class _PushDataState extends State<PushData> {
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      /* borderRadius: BorderRadius.circular(0),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 10,
-                          offset: const Offset(1, 1),
-                          color: Colors.grey.withOpacity(0.5),
-                        ),
-                      ],*/
                     ),
                     child: TextField(
                       controller: descriptionController,
@@ -270,7 +322,7 @@ class _PushDataState extends State<PushData> {
                   Container(
                     child: TextField(
                       controller: typeController,
-                      keyboardType: TextInputType.multiline,
+                      //keyboardType: TextInputType.multiline,
                       maxLines: null,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
@@ -292,9 +344,7 @@ class _PushDataState extends State<PushData> {
                             value: 'Historical',
                             groupValue: typeController,
                             onChanged: (value) {
-                              setState(() {
-                                typeController.text = value.toString();
-                              });
+                              typeController.text = value.toString();
                             },
                           ),
                         ),
@@ -306,9 +356,7 @@ class _PushDataState extends State<PushData> {
                             value: 'Other',
                             groupValue: typeController,
                             onChanged: (value) {
-                              setState(() {
-                                typeController.text = value.toString();
-                              });
+                              typeController.text = value.toString();
                             },
                           ),
                         ),
@@ -319,11 +367,12 @@ class _PushDataState extends State<PushData> {
                   //Upload Image .
                   Container(
                     padding: const EdgeInsets.only(bottom: 0),
-                    child: Text(
+                    child: const Text(
                       'Upload Image.',
                       style: TextStyle(
                         fontSize: 20,
-                        fontWeight: FontWeight.normal,
+                        fontWeight: FontWeight.w300,
+                        color: const Color(0xFF3EBACE),
                       ),
                     ),
                   ),
@@ -340,9 +389,6 @@ class _PushDataState extends State<PushData> {
                               if (snapshot.connectionState ==
                                       ConnectionState.done &&
                                   snapshot.hasData) {
-                                /* print(
-                                    '//////////////////////////////////////////////////');
-                                print(snapshot.data); */
                                 return Container(
                                   width: 100,
                                   height: 50,
@@ -356,33 +402,19 @@ class _PushDataState extends State<PushData> {
                               if (snapshot.connectionState ==
                                       ConnectionState.waiting ||
                                   !snapshot.hasData) {
-                                return CircularProgressIndicator();
+                                return Container(
+                                  width: 100,
+                                  height: 50,
+                                  margin: EdgeInsets.all(20),
+                                  child: Image.network(
+                                    element['imageUrl'],
+                                    fit: BoxFit.cover,
+                                  ),
+                                ); //CircularProgressIndicator();
                               }
                               return Container();
                             },
                           ),
-                          /*  FutureBuilder(
-                              future: storage.downloadURL(imageUrlController),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<String> snapshot) {
-                                if (snapshot.connectionState ==
-                                        ConnectionState.done &&
-                                    snapshot.hasData) {
-                                  return Container(
-                                    width: 100,
-                                    height: 50,
-                                    margin: EdgeInsets.all(20),
-                                    child: Text(imageUrlController),
-                                  );
-                                }
-                                if (snapshot.connectionState ==
-                                        ConnectionState.waiting ||
-                                    !snapshot.hasData) {
-                                  return CircularProgressIndicator();
-                                }
-                                return Container();
-                              },
-                            ), */
                           ElevatedButton(
                             onPressed: () async {
                               final results =
@@ -399,16 +431,30 @@ class _PushDataState extends State<PushData> {
                                   ),
                                 );
                               } else {
-                                final path = results.files.single.path;
-                                final fileName = results.files.single.name;
-
-                                storage.uploadFile(path.toString(), fileName);
-                                print(
-                                    '*************************************************************************************************');
-                                print(path);
-                                imageUrlController = fileName;
-                                //change();
-                                print(fileName);
+                                if (defaultTargetPlatform ==
+                                        TargetPlatform.iOS ||
+                                    defaultTargetPlatform ==
+                                        TargetPlatform.android) {
+                                  print(
+                                      '********************************************');
+                                  final path = results.files.single.path;
+                                  final fileName = results.files.single.name;
+                                  storage.uploadFile(path.toString(), fileName);
+                                  print(path);
+                                  imageUrlController = fileName;
+                                  change();
+                                  print(fileName);
+                                } else {
+                                  final fileName = results.files.single.name;
+                                  Uint8List? uploadfile =
+                                      results.files.single.bytes;
+                                  storage.uploadFileBytes(
+                                      uploadfile!, fileName);
+                                  print(uploadfile);
+                                  imageUrlController = fileName;
+                                  change();
+                                  print(fileName);
+                                }
                               }
                               ;
                             },
@@ -424,9 +470,10 @@ class _PushDataState extends State<PushData> {
                     child: const Text(
                       'Carte Information.',
                       style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.cyan),
+                        fontSize: 30,
+                        fontWeight: FontWeight.w300,
+                        color: const Color(0xFF3EBACE),
+                      ),
                     ),
                   ),
                   //latitude field
@@ -516,9 +563,7 @@ class _PushDataState extends State<PushData> {
                             value: 'normal',
                             groupValue: categoryController,
                             onChanged: (value) {
-                              setState(() {
-                                categoryController.text = value.toString();
-                              });
+                              categoryController.text = value.toString();
                             },
                           ),
                         ),
@@ -530,9 +575,7 @@ class _PushDataState extends State<PushData> {
                             value: 'special ',
                             groupValue: typeController,
                             onChanged: (value) {
-                              setState(() {
-                                categoryController.text = value.toString();
-                              });
+                              categoryController.text = value.toString();
                             },
                           ),
                         ),
@@ -551,7 +594,8 @@ class _PushDataState extends State<PushData> {
             ),
             TextButton(
               onPressed: () {
-                addDestination();
+                modifyDestination();
+
                 print('done!!');
               },
               child: Container(
@@ -560,11 +604,11 @@ class _PushDataState extends State<PushData> {
                 height: h * 0.1,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(100),
-                  color: Colors.cyan,
+                  color: const Color(0xFF3EBACE),
                 ),
                 child: Center(
                   child: Text(
-                    "Add destination",
+                    "Modify information",
                     style: TextStyle(
                       fontSize: 30,
                       color: Colors.white,
@@ -580,15 +624,6 @@ class _PushDataState extends State<PushData> {
             SizedBox(
               height: h * 0.05,
             ),
-            /*ElevatedButton(
-          child: const Text('Open route'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SignUp()),
-            );
-          },
-        ), */
           ],
         ),
       ),
@@ -596,43 +631,21 @@ class _PushDataState extends State<PushData> {
   }
 }
 
-//trache
-/*  child: Center(
-                      child: ToggleButtons(
-                        borderColor: Colors.white,
 
-                        children: [
-                          Container(
-                            margin: EdgeInsets.all(20),
-                            //width: 100,
-                            child: Row(children: [
-                              Icon(Icons.circle),
-                              Text(' Historical'),
-                            ]),
-                          ),
-                          Container(
-                            //width: 30,
-                            margin: EdgeInsets.all(20),
-                            child: Row(children: [
-                              Icon(Icons.circle),
-                              Text(' Other'),
-                            ]),
-                          ),
-                        ],
-                        isSelected: _selections,
-                        onPressed: (int index) {
-                          setState(() {
-                            (index == 1)
-                                ? _selections[0] = false
-                                : _selections[1] = false;
-                            _selections[index] = !_selections[index];
-                          });
-                        },
-                        color: Color.fromARGB(179, 75, 69, 69),
-                        selectedColor: Colors.cyan,
-                        selectedBorderColor: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                        //fillColor: Colors.yellow,
-                      ),
-                    ),
-                  */
+
+
+
+
+
+/**
+ * import 'package:flutter/foundation.dart';
+if (defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.android) {
+    // Some android/ios specific code
+}
+else if (defaultTargetPlatform == TargetPlatform.linux || defaultTargetPlatform == TargetPlatform.macOS || defaultTargetPlatform == TargetPlatform.windows) {
+    // Some desktop specific code there
+}
+else {
+    // Some web specific code there
+}
+ */

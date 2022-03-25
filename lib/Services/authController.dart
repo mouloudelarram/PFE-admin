@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/get_core.dart';
-import '../PushData.dart';
-import 'login.dart';
+import '../screens/PushData.dart';
+
+import '../auth/login.dart';
 
 class AuthController extends GetxController {
   //AuthController.instance;
@@ -29,9 +29,11 @@ class AuthController extends GetxController {
       print("login page");
       Get.offAll(() => const Login());
     } else {
-      Get.offAll(() => PushData());//Home(email: user.email));
+      Get.offAll(() => PushData(emailAdmin: user.email!,));
     }
   }
+
+  //Home(email: user.email));//
 
   //sing Up function,
   Future<void> register(String email, String password) async {

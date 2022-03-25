@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'temps/Destination.dart';
+import 'Destination.dart';
 
 class DestinationScreen extends StatefulWidget {
 

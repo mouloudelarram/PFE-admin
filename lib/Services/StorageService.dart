@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 
@@ -14,10 +15,10 @@ class StorageM {
     }
   }
 
-  Future<void> uploadFileBytes(String filePath, String fileName) async {
+  Future<void> uploadFileBytes(Uint8List filePath, String fileName) async {
     try {
-      File file = File(filePath);
-      await storage.ref('img/$fileName').putFile(file);
+      //File file = File(filePath);
+      await storage.ref('img/$fileName').putData(filePath);
     } on firebase_core.FirebaseException catch (e) {
       print(e.toString());
     }

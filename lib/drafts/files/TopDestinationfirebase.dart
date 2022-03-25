@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../temps/Destination.dart';
-import '../destination_screen.dart';
+import '../temps/destination_screen.dart';
 
 class TopDestination extends StatefulWidget {
   const TopDestination({Key? key}) : super(key: key);

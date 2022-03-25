@@ -1,12 +1,11 @@
-
 import 'package:admin/auth/singUp.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'authController.dart';
+import '../Services/authController.dart';
+import '../screens/aboutUs_Screen.dart';
+
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -16,13 +15,20 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
-
-    var emailController = TextEditingController();
-    var passwordController = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -36,7 +42,12 @@ class _LoginState extends State<Login> {
               width: w,
               height: h * 0.1,
               child: GestureDetector(
-                onTap: ()=> null,
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const AboutUsScreen(),
+                    ),
+                  ),
                 child: Stack(
                   children: const [
                     Positioned(
@@ -67,17 +78,6 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: h * 0.23,
             ),
-            /* Container(
-              child: Center(
-                child: Container(
-                  width: w * 0.2,
-                  height: h * 0.005,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.cyan[100]),
-                ),
-              ),
-            ), */
             SizedBox(
               height: h * 0.10,
             ),
@@ -255,15 +255,6 @@ class _LoginState extends State<Login> {
             SizedBox(
               height: h * 0.05,
             ),
-            /*ElevatedButton(
-          child: const Text('Open route'),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SignUp()),
-            );
-          },
-        ), */
           ],
         ),
       ),

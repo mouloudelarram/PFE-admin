@@ -1,23 +1,18 @@
-import 'package:admin/temps/desination.dart';
-import 'package:admin/temps/homeScreenAdmin.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:admin/PushData.dart';
 import 'package:get/get.dart';
 // Import the generated file
-import 'auth/authController.dart';
-import 'auth/singUp.dart';
-//import 'files/TopDestinationfirebase.dart';
+import 'Services/authController.dart';
+import 'auth/login.dart';
 import 'firebase_options.dart';
-import 'support/cloud.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  /* WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp().then((value) => Get.put(AuthController())); */
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp().then((value) => Get.put(AuthController()));
   runApp(const MyApp());
 }
 
@@ -31,9 +26,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreenAdmin(),//TopDestination(),//PushData(), //TopDestination(),//TopDestination(),//, //SignUp(),   //HomeScreenAdmin(), Cloud(),//TopDestination(),//
+      theme: ThemeData(
+        primaryColor: const Color(0xFF3EBACE),
+        scaffoldBackgroundColor: const Color(0xFFF3F5F7),
+        colorScheme: ColorScheme.fromSwatch()
+            .copyWith(secondary: const Color(0xFFD8ECF1)),
+      ),
+      home: Login(), // ici où on spécifier le contenue de notre app
     );
   }
 }

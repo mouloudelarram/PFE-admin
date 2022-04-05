@@ -349,9 +349,9 @@ class _PushDataState extends State<PushData> {
                         ListTile(
                           selectedTileColor: Colors.cyan,
                           selectedColor: Colors.cyan,
-                          title: const Text('Historical'),
+                          title: const Text('historical'),
                           leading: Radio(
-                            value: 'Historical',
+                            value: 'historical',
                             groupValue: typeController,
                             onChanged: (value) {
                               setState(() {
@@ -565,9 +565,9 @@ class _PushDataState extends State<PushData> {
                         ListTile(
                           selectedTileColor: Colors.cyan,
                           selectedColor: Colors.cyan,
-                          title: const Text('normal'),
+                          title: const Text('normale'),
                           leading: Radio(
-                            value: 'normal',
+                            value: 'normale',
                             groupValue: categoryController,
                             onChanged: (value) {
                               setState(() {
